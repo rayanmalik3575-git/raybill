@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RayBill – Simple, Powerful Invoicing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Main styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo">R</div>
+      <div class="brand-text">
+        <div class="brand-title">RayBill</div>
+        <div class="brand-tagline">Simple • Powerful • Yours</div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="header-pill">
+        <span class="pill-dot"></span>
+        <span>Today is a good day to get paid</span>
+      </div>
+      <button id="openPricingBtn" class="btn ghost">Plans</button>
+      <button id="upgradeBtn" class="btn primary">Upgrade to PRO</button>
+    </div>
+  </header>
+
+
+  <main class="app-main">
+    <section class="invoice-shell">
+      <!-- LEFT: FORM -->
+      <div class="panel panel-left">
+        <h2 class="section-title">Invoice details</h2>
+        <p class="section-subtitle">Fill once, reuse for every client.</p>
+
+        <div class="field-group">
+          <label>Your business / name</label>
+          <input id="businessName" type="text" placeholder="e.g. Your's Studio" />
+        </div>
+
+        <div class="field-group">
+          <label>Logo (optional)</label>
+          <div class="logo-row">
+            <label class="btn ghost small">
+              <input id="logoInput" type="file" accept="image/*" hidden />
+              Upload logo
+            </label>
+            <span id="logoHint" class="hint">No logo selected</span>
+          </div>
+        </div>
+
+        <div class="field-grid two">
+          <div class="field-group">
+            <label>Your email</label>
+            <input id="businessEmail" type="email" placeholder="you@example.com" />
+          </div>
+          <div class="field-group">
+            <label>Your address (optional)</label>
+            <input id="businessAddress" type="text" placeholder="City • Country" />
+          </div>
+        </div>
+
+        <div class="field-grid two">
+          <div class="field-group">
+            <label>Client name</label>
+            <input id="clientName" type="text" placeholder="Client company / name" />
+          </div>
+          <div class="field-group">
+            <label>Client email (optional)</label>
+            <input id="clientEmail" type="email" placeholder="client@example.com" />
+          </div>
+        </div>
+
+        <!-- Employee Name (new) -->
+        <div class="field-group">
+          <label>Employee / Handler (optional)</label>
+          <input id="employeeName" type="text" placeholder="e.g. John Doe" />
+        </div>
+
+        <div class="field-grid two">
+          <div class="field-group">
+            <label>Invoice number</label>
+            <input id="invoiceNumber" type="text" placeholder="2025-001" />
+          </div>
+          <div class="field-group">
+            <label>Currency</label>
+            <select id="currency">
+              <option value="USD">$ USD</option>
+              <option value="PKR">Rs PKR</option>
+              <option value="INR">₹ INR</option>
+              <option value="EUR">€ EUR</option>
+              <option value="GBP">£ GBP</option>
+              <option value="SAR">﷼ SAR</option>
+              <option value="AED">د.إ AED</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-grid two">
+          <div class="field-group">
+            <label>Invoice date</label>
+            <input id="invoiceDate" type="date" />
+          </div>
+          <div class="field-group">
+            <label>Due date</label>
+            <input id="dueDate" type="date" />
+          </div>
+        </div>
+
+        <div class="field-grid two">
+          <div class="field-group">
+            <label>Tax %</label>
+            <input id="taxPercent" type="number" min="0" max="100" value="0" />
+          </div>
+          <div class="field-group">
+            <label>Discount %</label>
+            <input id="discountPercent" type="number" min="0" max="100" value="0" />
+          </div>
+        </div>
+
+        <p class="hint">
+          Tip: keep tax &amp; discount simple. Complexity kills motivation, clarity makes you money.
+        </p>
+
+        <div class="field-group">
+          <label>Notes</label>
+          <textarea id="notes" rows="3" placeholder="Thank you for your business. Payment due within 7 days."></textarea>
+        </div>
+
+        <h3 class="section-title small">Line items</h3>
+        <p class="hint">Describe your work clearly.</p>
+
+        <div class="items-header">
+          <span>Description</span>
+          <span>Qty</span>
+          <span>Price</span>
+        </div>
+
+        <div id="itemsContainer" class="items-container"></div>
+
+        <button id="addItemBtn" class="btn ghost full">
+          + Add item
+        </button>
+
+        <div class="qr-toggle-row">
+          <label>
+            <input type="checkbox" id="showPaymentQr" checked />
+            Show Payment QR
+          </label>
+          <label>
+            <input type="checkbox" id="showWhatsAppQr" />
+            Show WhatsApp QR
+          </label>
+        </div>
+
+        <div class="field-group">
+          <label>Payment Link (URL)</label>
+          <input id="paymentLink" type="url" placeholder="https://your-payment-link.com" />
+        </div>
+
+        <div class="field-group">
+          <label>WhatsApp Number (+country code)</label>
+          <input id="whatsAppNumber" type="tel" placeholder="+923001234567" />
+        </div>
+
+        <div class="actions-row">
+          <button id="resetBtn" class="btn ghost">Reset form</button>
+          <button id="savePngBtn" class="btn ghost">Save PNG</button>
+          <button id="printBtn" class="btn primary">Print / PDF</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: PREVIEW -->
+      <div class="panel panel-right">
+
+        <!-- LIVE PREVIEW BADGE (green accent, visible only on screen) -->
+        <div class="live-preview-label">
+          <span class="live-dot"></span>
+          Live Preview
+        </div>
+
+        <!-- TEMPLATE SELECTOR -->
+        <div class="template-bar" style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <label for="templateSelect" style="font-weight:600; color:#374151;">Template:</label>
+          <select id="templateSelect" style="padding:8px 10px; border-radius:8px;">
+            <option value="clean-white">Clean White (Free)</option>
+            <option value="modern-blue" data-pro="true">Modern Blue — PRO 🔒</option>
+            <option value="elegant-purple" data-pro="true">Elegant Purple — PRO 🔒</option>
+            <option value="minimal-grey" data-pro="true">Minimal Grey — PRO 🔒</option>
+            <option value="dark-mode" data-pro="true">Dark Mode — PRO 🔒</option>
+          </select>
+        </div>
+
+        <!-- SOFT TAG-STYLE TEMPLATE HEADER (shows template name & dot) -->
+        <div id="templateHeader" class="template-header">
+          <span class="dot" aria-hidden="true"></span>&nbsp;<span id="templateHeaderText">Clean White Template</span>
+        </div>
+
+        <div id="invoicePreview" class="invoice-preview template-clean-white">
+
+          <div class="preview-header">
+            <div class="preview-brand">
+              <img id="logoPreview" class="preview-logo" alt="Logo" />
+              <div>
+                <div id="previewBusinessName" class="preview-business-name">Your Business / Name</div>
+                <div id="previewBusinessEmail" class="preview-business-email">you@example.com</div>
+              </div>
+            </div>
+            <div class="preview-meta">
+              <div class="invoice-pill">
+                Invoice · <span id="previewInvoiceNumber">2025</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BILL TO + EMPLOYEE (Employee shows only if filled) -->
+          <div class="preview-billto">
+            <div class="billto-left">
+              <div style="font-weight:600; margin-bottom:4px;">Bill To</div>
+              <div id="previewClientName" class="preview-client-name">Client Name</div>
+              <div id="previewClientEmail" class="preview-client-email" style="color:#6b7280; font-size:13px;">client@example.com</div>
+            </div>
+            <div class="billto-right">
+              <div id="previewEmployeeWrap" style="display:none;">
+                <div style="font-weight:600; margin-bottom:4px;">Handled By</div>
+                <div id="previewEmployeeName" style="color:#374151;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="previewBody" class="preview-body"></div>
+
+          <div class="qr-row">
+            <div class="qr-box">
+              <div class="qr-title">Payment QR</div>
+              <div id="paymentQrBox" class="qr-inner">—</div>
+            </div>
+            <div class="qr-box">
+              <div class="qr-title">WhatsApp QR</div>
+              <div id="whatsAppQrBox" class="qr-inner">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING SECTION (unchanged) -->
+    <section id="pricingSection" class="pricing">
+      <h2 class="pricing-title">RayBill plans</h2>
+      <p class="pricing-subtitle">Start free. Upgrade when your invoices start stacking.</p>
+
+      <div class="pricing-grid">
+        <!-- FREE -->
+        <div class="plan-card plan-free">
+          <div class="plan-label">Free</div>
+          <div class="plan-price-main">$0 / month</div>
+          <div class="plan-price-local">Forever free • best for getting started</div>
+          <ul class="plan-features">
+            <li>Up to <strong>2 line items</strong> per invoice</li>
+            <li>Payment & WhatsApp QR</li>
+            <li>Print / PDF invoice exports</li>
+          </ul>
+          <button class="btn disabled full">Current plan</button>
+        </div>
+
+        <!-- PRO MONTHLY -->
+        <!-- <div class="plan-card plan-pro"> -->
+          <div class="plan-card plan-pro monthly">
+          <div class="plan-label">RayBill PRO – Monthly</div>
+          <div id="proPriceUsd" class="plan-price-main">$5.99 / month</div>
+          <div id="proPriceLocal" class="plan-price-local">≈ PKR 1,650 / month</div>
+
+          <ul class="plan-features">
+            <li>Unlimited line items & invoices</li>
+            <li>Smart tax & discount automation</li>
+            <li>Premium invoice templates</li>
+            <li>Remove RayBill branding</li>
+            <li>Custom business colors & branding</li>
+            <li>Priority support & fast updates</li>
+            <li>Early access to new RayBill AI tools</li>
+          </ul>
+
+          <button id="upgradeBtnBottomMonthly" class="btn primary full">
+            Upgrade Monthly
+          </button>
+</div>
+          <!--<button id="debugProBtn" class="btn ghost small dev-only">
+            Dev: Unlock PRO locally
+          </button>
+        </div> -->
+
+        <!-- PRO YEARLY -->
+        <div class="plan-card plan-pro yearly">
+          <div class="plan-label">RayBill PRO – Yearly</div>
+          <div class="sale-badge">58% OFF</div>
+          <div class="plan-price-main">$29.99 / year</div>
+          <div class="plan-price-local">Best plan • Full access</div>
+          <ul class="plan-features">
+            <li>Everything in PRO Monthly</li>
+            <li>Pay once, enjoy peace of mind</li>
+            <li>Best value for professionals</li>
+          </ul>
+          <button id="upgradeBtnBottomYearly" class="btn primary full">
+            Upgrade Yearly
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- App script -->
+  <script src="script.js"></script>
+</body>
+</html>
